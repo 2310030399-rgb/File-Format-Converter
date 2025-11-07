@@ -1,47 +1,61 @@
-# File Format Converter
-A simple Python tool to convert datasets between CSV, JSON, and Parquet formats using Pandas and PyArrow.
+## File Format Converter (CSV, JSON, YAML, XLSX)
 
-Features
-Convert CSV → JSON / Parquet
-Convert JSON → CSV / Parquet
-Convert Parquet → CSV / JSON
-Lightweight and easy to extend
-Supports structured data for data engineering and analytics
-Technologies Used
-Python 3.x
-Pandas (data handling)
-PyArrow (Parquet format support)
-Installation
-Clone or download this repository:
-git clone https://github.com/yourusername/file-format-converter.git
-cd file-format-converter
-Install dependencies:
-pip install pandas pyarrow
-Usage
-1. Import and Use in Python
-from file_format_converter import (
-    csv_to_json, json_to_csv, csv_to_parquet,
-    parquet_to_csv, json_to_parquet, parquet_to_json
-)
+Simple Python CLI to convert data files by extension.
 
-# Convert CSV to JSON
-csv_to_json("sample.csv", "output.json")
+- CSV ↔ JSON
+- JSON ↔ YAML
+- CSV ↔ XLSX
 
-# Convert JSON to CSV
-json_to_csv("sample.json", "output.csv")
-2. Example Files
-sample.csv
-sample.json
-Use them to test conversions directly.
+### Install
 
-Future Enhancements
-Command-Line Interface (CLI) support
-GUI for drag-and-drop file conversion
-Support for additional formats (Excel, Avro)
-Error handling and logging
-Project Structure
-file-format-converter/
-│── file_format_converter.py   # Conversion logic
-│── sample.csv                 # Example CSV file
-│── sample.json                # Example JSON file
-│── README.md                  # Documentation
+```bash
+python -m venv .venv
+. .venv/Scripts/activate  # Windows PowerShell: .venv\Scripts\Activate.ps1
+pip install -r requirements.txt
+```
+
+### CLI Usage
+
+```bash
+# General form
+python -m converter convert INPUT.ext OUTPUT.ext
+
+# Examples
+python -m converter convert data/input.csv data/output.json
+python -m converter convert data/input.json data/output.yaml
+python -m converter convert data/input.csv data/output.xlsx
+python -m converter convert data/input.xlsx data/output.csv
+
+# Compact JSON
+python -m converter convert input.json output.json --no-pretty-json
+```
+
+Notes:
+- CSV expects a header row. Nested objects/lists are serialized to JSON strings in CSV.
+- XLSX conversion requires `pandas` and `openpyxl`.
+
+### Library Use
+
+```python
+from pathlib import Path
+from converter.main import convert_file
+
+convert_file(Path("input.csv"), Path("output.json"))
+```
+
+### Limitations
+- CSV round-tripping of nested structures results in JSON-encoded strings in cells.
+- Only the first sheet of XLSX is read/written.
+
+## Web UI (Flask)
+
+```bash
+pip install -r requirements.txt
+python web/app.py
+# Open http://127.0.0.1:5000
+```
+
+- Upload a file and choose the target format (JSON/YAML/CSV/XLSX).
+- Click Convert & Download to receive the converted file.
+
+
